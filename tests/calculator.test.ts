@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { calculateSets, STAGES } from '../src/calculator';
 import type { Mode } from '../src/calculator';
-import { INVENTORY, parseInventory } from '../src/inventory';
+import { parseInventory } from '../src/inventory';
+import { TEST_INVENTORY } from './fixtures/inventory';
 import type { Diameter, Plate } from '../src/inventory';
 
 const inventory = (rows: string) => parseInventory(`weightKg,diameterMm,color,quantity\n${rows}`);
@@ -10,16 +11,24 @@ const target = (weight: number, bar: number, plates: Plate[], mode: Mode = 'barb
 
 describe('exact bounded plate optimization', () => {
   it('finds an exact achievable total including the bar', () => {
-    const result = target(100_000, 20_000, INVENTORY);
+    const result = target(100_000, 20_000, TEST_INVENTORY);
     expect(result.actualG).toBe(100_000);
     expect(result.differenceUnits).toBe(0);
     expect(result.loading.map(({ plate, count }) => [plate.weightG, count])).toEqual([[25_000, 1], [15_000, 1]]);
   });
 
   it('finds the nearest total below an unachievable target', () => {
-    const result = target(103_000, 20_000, INVENTORY);
+    const result = target(103_000, 20_000, TEST_INVENTORY);
     expect(result.actualG).toBe(100_000);
     expect(result.differenceUnits).toBe(300_000);
+  });
+
+  it('uses fractional plates to get closer without exceeding the target', () => {
+    const plates = inventory('20,50,grey,4\n1.25,50,grey,2\n0.115,50,black,2\n0.225,50,blue,2\n0.345,50,red,2\n0.46,50,green,2');
+    const result = target(103_000, 20_000, plates);
+    expect(result.actualG).toBe(102_950);
+    expect(result.differenceUnits).toBe(5_000);
+    expect(result.loading.map(({ plate, count }) => [plate.weightG, count])).toEqual([[20_000, 2], [1_250, 1], [225, 1]]);
   });
 
   it('respects physical quantity and odd leftovers', () => {
@@ -50,13 +59,13 @@ describe('exact bounded plate optimization', () => {
   });
 
   it('marks stages below bar weight as not achievable', () => {
-    const stages = calculateSets(30_000, 20_000, 'barbell', 50, INVENTORY);
+    const stages = calculateSets(30_000, 20_000, 'barbell', 50, TEST_INVENTORY);
     expect(stages[0]).toMatchObject({ actualG: null, differenceUnits: null, loading: [] });
     expect(stages[1]!.actualG).toBe(20_000);
   });
 
   it('accepts an empty bar equal to the requested weight', () => {
-    expect(target(20_000, 20_000, INVENTORY)).toMatchObject({ actualG: 20_000, differenceUnits: 0, loading: [] });
+    expect(target(20_000, 20_000, TEST_INVENTORY)).toMatchObject({ actualG: 20_000, differenceUnits: 0, loading: [] });
   });
 
   it('uses an empty bar when no plates are available, only below the target', () => {
@@ -66,7 +75,7 @@ describe('exact bounded plate optimization', () => {
   });
 
   it('applies percentages to full weight including the bar', () => {
-    const stages = calculateSets(100_000, 20_000, 'barbell', 50, INVENTORY);
+    const stages = calculateSets(100_000, 20_000, 'barbell', 50, TEST_INVENTORY);
     expect(stages.map((stage) => stage.requestedUnits)).toEqual([5_000_000, 7_000_000, 9_000_000, 10_000_000]);
     expect(stages.map((stage) => stage.actualG)).toEqual([50_000, 70_000, 90_000, 100_000]);
     expect(stages.map((stage) => stage.reps)).toEqual(['5 reps', '3 reps', '1–2 reps', 'Target']);

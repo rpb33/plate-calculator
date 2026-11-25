@@ -23,6 +23,8 @@ npx playwright install chromium webkit
 npm run test:e2e         # Chrome/Android and WebKit/iPhone browser + WCAG checks
 ```
 
+Unit tests use a fixed inventory in `tests/fixtures/inventory.ts`. Browser checks compare the UI against the configured app inventory, so editing valid plate stock does not require changing test expectations.
+
 Browser tests serve `dist/` at `/plate-calculator/`, verifying a real repository subpath. Build first. To use an existing Chrome installation locally, set `PLAYWRIGHT_CHROME_PATH` to its executable path. Automated checks complement, but do not replace, testing on physical iOS and Android devices.
 
 ## Edit your plate inventory

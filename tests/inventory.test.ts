@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { INVENTORY, parseInventory } from '../src/inventory';
+import { parseInventory } from '../src/inventory';
+import { TEST_INVENTORY_CSV } from './fixtures/inventory';
 
 const header = 'weightKg,diameterMm,color,quantity';
 describe('static CSV inventory', () => {
-  it('loads the documented example as physical individual quantities', () => {
-    expect(INVENTORY).toHaveLength(9);
-    expect(INVENTORY[0]).toEqual({ id: 0, weightG: 25_000, diameterMm: 50, color: 'red', quantity: 2 });
+  it('parses physical individual quantities from a fixed CSV fixture', () => {
+    const plates = parseInventory(TEST_INVENTORY_CSV);
+    expect(plates).toHaveLength(9);
+    expect(plates[0]).toEqual({ id: 0, weightG: 25_000, diameterMm: 50, color: 'red', quantity: 2 });
   });
   it('supports CRLF, whitespace, empty lines, duplicate weights and zero quantity', () => {
     expect(parseInventory(` ${header}\r\n5,50,red,2\r\n\r\n 5, 50, blue, 0 `)).toEqual([
