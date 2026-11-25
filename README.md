@@ -32,13 +32,13 @@ Replace the clearly marked **EXAMPLE INVENTORY** multiline CSV in [`src/inventor
 ```csv
 weightKg,diameterMm,color,quantity
 25,50,red,2
-5,25,blue,4
-1.25,25,green,8
+5,30,blue,4
+1.25,30,green,8
 ```
 
 - `quantity` counts individual physical plates across your entire inventory.
 - `weightKg` must be positive, at most 10000 kg, with up to three decimal places.
-- `diameterMm` must be `25` or `50`; the selected diameter is used exclusively.
+- `diameterMm` must be `30` or `50`; the selected diameter is used exclusively.
 - `color` must be `red`, `green`, `blue`, `yellow`, `grey` or `black`.
 - `quantity` must be a nonnegative safe integer. Zero-quantity rows are allowed.
 - Multiple rows of the same weight, including different colors, are supported. Each row is a separate stock pool. Combine identical weight/diameter/color stock into one row so its plates can form complete groups.

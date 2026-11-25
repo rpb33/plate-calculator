@@ -43,10 +43,10 @@ describe('exact bounded plate optimization', () => {
   });
 
   it('filters diameter without mixing inventories', () => {
-    const plates = inventory('5,25,red,4\n10,50,blue,4');
-    expect(target(50_000, 10_000, plates, 'barbell', 25).actualG).toBe(30_000);
+    const plates = inventory('5,30,red,4\n10,50,blue,4');
+    expect(target(50_000, 10_000, plates, 'barbell', 30).actualG).toBe(30_000);
     expect(target(50_000, 10_000, plates, 'barbell', 50).actualG).toBe(50_000);
-    expect(target(50_000, 10_000, plates, 'barbell', 25).loading.every(({ plate }) => plate.diameterMm === 25)).toBe(true);
+    expect(target(50_000, 10_000, plates, 'barbell', 30).loading.every(({ plate }) => plate.diameterMm === 30)).toBe(true);
   });
 
   it('marks stages below bar weight as not achievable', () => {

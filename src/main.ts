@@ -28,10 +28,12 @@ function restore(): void {
     const saved: unknown = JSON.parse(raw);
     if (!saved || typeof saved !== 'object') return;
     const values = saved as Record<string, unknown>;
+    // Preserve the smaller-diameter selection from earlier releases.
+    if (values.diameter === 25 || values.diameter === '25') values.diameter = 30;
     if (typeof values.target === 'string' && !validateWeight(values.target, true)) target.value = values.target;
     if (typeof values.bar === 'string' && !validateWeight(values.bar, false)) bar.value = values.bar;
     for (const name of ['mode', 'diameter'] as const) {
-      const allowed = name === 'mode' ? ['barbell', 'dumbbell'] : ['25', '50'];
+      const allowed = name === 'mode' ? ['barbell', 'dumbbell'] : ['30', '50'];
       if (allowed.includes(String(values[name]))) {
         form.querySelector<HTMLInputElement>(`input[name="${name}"][value="${String(values[name])}"]`)!.checked = true;
       }

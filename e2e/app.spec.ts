@@ -34,7 +34,7 @@ test('updates instantly and clears stale results for invalid inputs', async ({ p
 
 test('supports dumbbell pairs, diameter changes and per-end labels', async ({ page }) => {
   await page.getByRole('radio', { name: 'Dumbbell', exact: true }).check();
-  await page.getByRole('radio', { name: '25 mm' }).check();
+  await page.getByRole('radio', { name: '30 mm' }).check();
   await page.getByRole('textbox', { name: 'Target weight' }).fill('17.5');
   await page.getByRole('textbox', { name: 'Bar weight' }).fill('2.5');
   await expect(page.locator('.set-card').last().locator('.achieved')).toHaveText('17.5kg');
@@ -53,12 +53,21 @@ test('remembers valid selections after reload', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Target weight' }).fill('32.5');
   await page.getByRole('textbox', { name: 'Bar weight' }).fill('2.5');
   await page.getByRole('radio', { name: 'Dumbbell', exact: true }).check();
-  await page.getByRole('radio', { name: '25 mm' }).check();
+  await page.getByRole('radio', { name: '30 mm' }).check();
   await page.reload();
   await expect(page.getByRole('textbox', { name: 'Target weight' })).toHaveValue('32.5');
   await expect(page.getByRole('textbox', { name: 'Bar weight' })).toHaveValue('2.5');
   await expect(page.getByRole('radio', { name: 'Dumbbell', exact: true })).toBeChecked();
-  await expect(page.getByRole('radio', { name: '25 mm' })).toBeChecked();
+  await expect(page.getByRole('radio', { name: '30 mm' })).toBeChecked();
+  // Older releases stored 25 mm as the smaller-diameter selection.
+  await page.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem('plate-calculator:v1')!);
+    saved.diameter = 25;
+    localStorage.setItem('plate-calculator:v1', JSON.stringify(saved));
+  });
+  await page.reload();
+  await expect(page.getByRole('radio', { name: '30 mm' })).toBeChecked();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('plate-calculator:v1')!).diameter)).toBe(30);
 });
 
 test('handles unavailable storage and malformed persisted settings', async ({ page }) => {

@@ -67,7 +67,7 @@ export function calculateSets(
     }
   }
   if (mode !== 'barbell' && mode !== 'dumbbell') throw new RangeError('Unknown equipment mode.');
-  if (diameter !== 25 && diameter !== 50) throw new RangeError('Plate diameter must be 25 or 50.');
+  if (diameter !== 30 && diameter !== 50) throw new RangeError('Plate diameter must be 30 or 50.');
   const groupSize = mode === 'barbell' ? 2 : 4;
   const plates = inventory.filter((plate) => plate.diameterMm === diameter && plate.quantity >= groupSize)
     .sort((a, b) => b.weightG - a.weightG || a.id - b.id);

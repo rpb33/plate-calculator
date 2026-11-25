@@ -19,11 +19,11 @@ describe('static CSV inventory', () => {
     ['5,50,red', 'exactly 4'], ['5,50,red,2,extra', 'exactly 4'],
     ['0,50,red,2', 'weightKg'], ['-1,50,red,2', 'weightKg'], ['NaN,50,red,2', 'weightKg'],
     ['0.0001,50,red,2', 'weightKg'], ['10001,50,red,2', 'weightKg'],
-    ['5,30,red,2', 'diameterMm'], ['5,25.0,red,2', 'diameterMm'],
+    ['5,25,red,2', 'diameterMm'], ['5,30.0,red,2', 'diameterMm'],
     ['5,50,purple,2', 'color'], ['5,50,RED,2', 'color'],
     ['5,50,red,-1', 'quantity'], ['5,50,red,2.5', 'quantity'], ['5,50,red,', 'quantity'],
     ['5,50,red,9007199254740992', 'quantity'],
   ])('rejects malformed row %s with line and field context', (row, field) => {
-    expect(() => parseInventory(`${header}\n5,25,green,4\n${row}`)).toThrow(new RegExp(`Inventory line 3:.*${field}`));
+    expect(() => parseInventory(`${header}\n5,30,green,4\n${row}`)).toThrow(new RegExp(`Inventory line 3:.*${field}`));
   });
 });
