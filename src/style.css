@@ -96,3 +96,8 @@ footer { margin-top: 17px; color: var(--muted); text-align: center; font-size: 9
   .segmented input:checked + span { outline: 2px solid Highlight; }
   .plate { border: 1px solid CanvasText; }
 }
+
+.app-actions { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.app-actions button { min-height: 44px; margin-top: 12px; padding: 8px 14px; border: 1px solid #b7c7b6; border-radius: 7px; background: #eef3ed; color: var(--green); font: inherit; font-size: 12px; cursor: pointer; }
+.app-actions button:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.app-actions button:disabled { opacity: .65; cursor: wait; }

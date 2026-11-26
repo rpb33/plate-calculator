@@ -1,3 +1,4 @@
+import './pwa';
 import './style.css';
 import { calculateSets } from './calculator';
 import type { Mode, StageResult } from './calculator';

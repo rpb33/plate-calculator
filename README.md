@@ -56,6 +56,22 @@ The exact bounded knapsack solver keeps the best configuration at each reachable
 
 Inputs and inventory use integer grams. Stage requests and differences use integer hundredths of a gram so percentage calculations never round upward; comparison and optimization use integers throughout. Inputs accept a decimal point or comma, up to three decimal places, between 0 and 10000 kg (target must be positive). Supporting values preserve any fractional-gram stage request. A bar above the requested stage is “Not achievable”; an empty bar is otherwise valid. Runtime scales with reachable weight sums and available row counts; normal home-gym inventories are small.
 
+## Install and use offline
+
+Open [the live app](https://rpb33.github.io/plate-calculator/) once while online, then install it:
+
+- **iPhone/iPad:** In Safari, open **Share → Add to Home Screen** and confirm. Enable **Open as Web App** if offered.
+- **Android:** Use **Install app** when shown, or Chrome's menu → **Add to Home screen / Install app**.
+- **Desktop:** Use the browser's install icon or the app's **Install app** button when available.
+
+After its first successful online load, the complete calculator and selected inventory are cached. You can reopen and reload it offline; valid weights and equipment selections remain on that device. Clearing site data removes the offline cache and saved selections. HTTPS is required on a deployed host; localhost also supports PWA testing.
+
+A new deployment downloads a complete new cache in the background. **Update app** appears when it is ready; selecting it reloads with the new version and inventory, preserving saved settings. Closing all app windows also allows a waiting update to activate. Caches are scoped to this repository so other apps on the same GitHub Pages domain are unaffected.
+
+Service workers are enabled only in production builds. For a local PWA preview, run `npm run build` followed by `npm run preview`, open its URL, wait for the first load, then test offline in browser developer tools. `npm run dev` keeps Vite's normal uncached development behavior.
+
+The manifest is `public/manifest.webmanifest`. Install icons derive from `public/favicon.svg`; regenerate them with `node scripts/generate-icons.mjs` after installing Playwright Chromium. The Vite build creates `dist/sw.js` with a content-derived cache version and the complete asset list, so inventory and asset changes are included automatically. No new dependencies are required.
+
 ## GitHub and deployment
 
 The repository includes [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). On a push to `main` or a manual dispatch, it runs `npm ci`, unit tests, TypeScript checks, the production build and browser/accessibility tests, then deploys `dist/` using the official GitHub Pages actions. The workflow declares Pages permissions, deployment environment and concurrency. Vite's `base: './'` makes assets work under repository subpaths.
